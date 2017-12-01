@@ -3,7 +3,7 @@ var THREE = require('../lib/three');
 var utils = require('../utils/');
 var isHLS = require('../utils/material').isHLS;
 
-var bind = utils.bind;
+var bind = require('../utils/bind').bind;
 var debug = utils.debug;
 var error = debug('components:texture:error');
 var TextureLoader = new THREE.TextureLoader();
@@ -23,7 +23,7 @@ TextureLoader.setCrossOrigin('anonymous');
  *   - Images: textureCache has mapping of src -> repeat -> cached three.js texture.
  *   - Videos: textureCache has mapping of videoElement -> cached three.js texture.
  */
-module.exports.System = registerSystem('material', {
+exports.System = registerSystem('material', {
   init: function () {
     this.materials = {};
     this.textureCounts = {};

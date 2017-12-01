@@ -9,7 +9,7 @@ var HLS_MIMETYPES = ['application/x-mpegurl', 'application/vnd.apple.mpegurl'];
  * @param {object} shader - A-Frame shader instance.
  * @param {object} data
  */
-module.exports.updateMapMaterialFromData = function (materialName, dataName, shader, data) {
+exports.updateMapMaterialFromData = function (materialName, dataName, shader, data) {
   var el = shader.el;
   var material = shader.material;
   var src = data[dataName];
@@ -52,7 +52,7 @@ module.exports.updateMapMaterialFromData = function (materialName, dataName, sha
   function setMap (texture) {
     material[materialName] = texture;
     material.needsUpdate = true;
-    handleTextureEvents(el, texture);
+    exports.handleTextureEvents(el, texture);
   }
 };
 
@@ -62,8 +62,8 @@ module.exports.updateMapMaterialFromData = function (materialName, dataName, sha
  * @param {object} shader - A-Frame shader instance.
  * @param {object} data
  */
-module.exports.updateMap = function (shader, data) {
-  return module.exports.updateMapMaterialFromData('map', 'src', shader, data);
+exports.updateMap = function (shader, data) {
+  return exports.updateMapMaterialFromData('map', 'src', shader, data);
 };
 
 /**
@@ -73,7 +73,7 @@ module.exports.updateMap = function (shader, data) {
  * @param {object} shader - A-Frame shader instance
  * @param {object} data
  */
-module.exports.updateDistortionMap = function (longType, shader, data) {
+exports.updateDistortionMap = function (longType, shader, data) {
   var shortType = longType;
   if (longType === 'ambientOcclusion') { shortType = 'ao'; }
   var el = shader.el;
@@ -113,7 +113,7 @@ module.exports.updateDistortionMap = function (longType, shader, data) {
  * @param {Element} el - Entity.
  * @param {object} texture - three.js Texture.
  */
-function handleTextureEvents (el, texture) {
+exports.handleTextureEvents = function(el, texture) {
   if (!texture) { return; }
 
   el.emit('materialtextureloaded', {src: texture.image, texture: texture});
@@ -138,7 +138,6 @@ function handleTextureEvents (el, texture) {
     el.emit('materialvideoended', {src: texture.image, texture: texture});
   });
 }
-module.exports.handleTextureEvents = handleTextureEvents;
 
 /**
  * Given video element src and type, guess whether stream is HLS.
@@ -146,7 +145,7 @@ module.exports.handleTextureEvents = handleTextureEvents;
  * @param {string} src - src from video element (generally URL to content).
  * @param {string} type - type from video element (generally MIME type if present).
  */
-module.exports.isHLS = function (src, type) {
+exports.isHLS = function (src, type) {
   if (type && HLS_MIMETYPES.includes(type.toLowerCase())) { return true; }
   if (src && src.toLowerCase().indexOf('.m3u8') > 0) { return true; }
   return false;

@@ -1,12 +1,8 @@
 /* global THREE */
-var debug = require('./debug');
 var extend = require('object-assign');
 
-var warn = debug('utils:coordinates:warn');
-
 // Coordinate string regex. Handles negative, positive, and decimals.
-var regex = /^\s*((-?\d*\.{0,1}\d+(e-?\d+)?)\s+){2,3}(-?\d*\.{0,1}\d+(e-?\d+)?)\s*$/;
-module.exports.regex = regex;
+exports.regex = /^\s*((-?\d*\.{0,1}\d+(e-?\d+)?)\s+){2,3}(-?\d*\.{0,1}\d+(e-?\d+)?)\s*$/;
 
 /**
  * Parses coordinates from an "x y z" string.
@@ -16,7 +12,7 @@ module.exports.regex = regex;
  * @param {string} defaults - fallback value.
  * @returns {object} An object with keys [x, y, z].
  */
-function parse (value, defaultVec) {
+ exports.parse = function(value, defaultVec) {
   var coordinate;
   var vec = {};
 
@@ -40,7 +36,6 @@ function parse (value, defaultVec) {
   vec.w = coordinate[3] || defaultVec && defaultVec.w;
   return vecParseFloat(vec);
 }
-module.exports.parse = parse;
 
 /**
  * Stringifies coordinates from an object with keys [x y z].
@@ -49,24 +44,17 @@ module.exports.parse = parse;
  * @param {object|string} data - An object with keys [x y z].
  * @returns {string} An "x y z" string.
  */
-function stringify (data) {
+exports.stringify = function(data) {
   if (typeof data !== 'object') { return data; }
   return [data.x, data.y, data.z, data.w].join(' ').trim();
 }
-module.exports.stringify = stringify;
 
 /**
  * @returns {bool}
  */
-function isCoordinates (value) {
+exports.isCoordinates = function(value) {
   return regex.test(value);
 }
-module.exports.isCoordinates = isCoordinates;
-
-module.exports.isCoordinate = function (value) {
-  warn('`AFRAME.utils.isCoordinate` has been renamed to `AFRAME.utils.isCoordinates`');
-  return isCoordinates(value);
-};
 
 function vecParseFloat (vec) {
   Object.keys(vec).forEach(function (key) {
@@ -82,6 +70,6 @@ function vecParseFloat (vec) {
 /**
  * Converts {x, y, z} object to three.js Vector3.
  */
-module.exports.toVector3 = function (vec3) {
+exports.toVector3 = function(vec3) {
   return new THREE.Vector3(vec3.x, vec3.y, vec3.z);
 };

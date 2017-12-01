@@ -29,7 +29,7 @@ function addTagName (tagName) {
  * @param {string} node - The name of the tag to register.
  * @returns {boolean} Whether the tag name matches that of our registered custom elements.
  */
-module.exports.isNode = function (node) {
+exports.isNode = function (node) {
   return node.tagName.toLowerCase() in knownTags || node.isNode;
 };
 
@@ -38,7 +38,7 @@ module.exports.isNode = function (node) {
  * @param {object} obj - The prototype of the new element.
  * @returns {object} The prototype of the new element.
  */
-module.exports.registerElement = function (tagName, obj) {
+exports.registerElement = function (tagName, obj) {
   var proto = Object.getPrototypeOf(obj.prototype);
   var newObj = obj;
   var isANode = ANode && proto === ANode.prototype;
@@ -122,7 +122,7 @@ function wrapMethods (targetObj, methodList, derivedObj, baseObj) {
     wrapMethod(targetObj, methodName, derivedObj, baseObj);
   });
 }
-module.exports.wrapMethods = wrapMethods;
+exports.wrapMethods = wrapMethods;
 
 /**
  * Wrap one method to ensure that the one in the base prototype is called before
@@ -171,5 +171,5 @@ function copyProperties (source, destination) {
   });
 }
 
-ANode = require('./a-node');
+ANode = require('./a-node').node;
 AEntity = require('./a-entity');

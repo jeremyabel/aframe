@@ -8,7 +8,7 @@ var processSchema = schema.process;
 var isSingleProp = schema.isSingleProperty;
 var styleParser = utils.styleParser;
 
-var systems = module.exports.systems = {};  // Keep track of registered systems.
+var systems = exports.systems = {};  // Keep track of registered systems.
 
 /**
  * System class definition.
@@ -27,7 +27,7 @@ var systems = module.exports.systems = {};  // Keep track of registered systems.
  * @member {string} name - Name that system is registered under.
  * @member {Element} sceneEl - Handle to the scene element where system applies to.
  */
-var System = module.exports.System = function (sceneEl) {
+var System = exports.System = function (sceneEl) {
   var component = components && components.components[this.name];
 
   // Set reference to scene.
@@ -125,7 +125,7 @@ System.prototype = {
  * @param {object} definition - Component property and methods.
  * @returns {object} Component.
  */
-module.exports.registerSystem = function (name, definition) {
+exports.registerSystem = function (name, definition) {
   var i;
   var NewSystem;
   var proto = {};

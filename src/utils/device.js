@@ -1,41 +1,8 @@
-var THREE = require('../lib/three');
-var dolly = new THREE.Object3D();
-var controls = new THREE.VRControls(dolly);
-
-/**
- * Determine if a headset is connected by checking if the orientation is available.
- */
-function checkHeadsetConnected () {
-  var orientation;
-  var vrDisplay = controls.getVRDisplay();
-
-  // If `isConnected` is available, just use that.
-  if (vrDisplay && 'isConnected' in vrDisplay) { return vrDisplay.isConnected; }
-
-  controls.update();
-  orientation = dolly.quaternion;
-  if (orientation._x !== 0 || orientation._y !== 0 || orientation._z !== 0) {
-    return true;
-  }
-  return false;
-}
-module.exports.checkHeadsetConnected = checkHeadsetConnected;
-
-/**
- * Check for positional tracking.
- */
-function checkHasPositionalTracking () {
-  var vrDisplay = controls.getVRDisplay();
-  if (isMobile() || isGearVR()) { return false; }
-  return vrDisplay && vrDisplay.capabilities.hasPosition;
-}
-module.exports.checkHasPositionalTracking = checkHasPositionalTracking;
-
 /**
  * Checks if browser is mobile.
  * @return {Boolean} True if mobile browser detected.
  */
-var isMobile = (function () {
+exports.isMobile = (function () {
   var _isMobile = false;
   (function (a) {
     // eslint-disable-next-line no-useless-escape
@@ -49,40 +16,39 @@ var isMobile = (function () {
 
   return function () { return _isMobile; };
 })();
-module.exports.isMobile = isMobile;
 
 /**
  *  Detect tablet devices.
  *  @param {string} mockUserAgent - Allow passing a mock user agent for testing.
  */
-function isTablet (mockUserAgent) {
+function isTablet(mockUserAgent) {
   var userAgent = mockUserAgent || window.navigator.userAgent;
   return /ipad|Nexus (7|9)|xoom|sch-i800|playbook|tablet|kindle/i.test(userAgent);
 }
-module.exports.isTablet = isTablet;
+exports.isTablet = isTablet;
 
-function isIOS () {
+function isIOS() {
   return /iPad|iPhone|iPod/.test(window.navigator.platform);
 }
-module.exports.isIOS = isIOS;
+exports.isIOS = isIOS;
 
-function isGearVR () {
+function isGearVR() {
   return /SamsungBrowser.+Mobile VR/i.test(window.navigator.userAgent);
 }
-module.exports.isGearVR = isGearVR;
+exports.isGearVR = isGearVR;
 
 /**
  * Checks mobile device orientation.
  * @return {Boolean} True if landscape orientation.
  */
-module.exports.isLandscape = function () {
+exports.isLandscape = function () {
   return window.orientation === 90 || window.orientation === -90;
 };
 
 /**
  * Check if device is iOS and older than version 10.
  */
-module.exports.isIOSOlderThan10 = function (userAgent) {
+exports.isIOSOlderThan10 = function (userAgent) {
   return /(iphone|ipod|ipad).*os.(7|8|9)/i.test(userAgent);
 };
 
@@ -93,9 +59,9 @@ module.exports.isIOSOlderThan10 = function (userAgent) {
  * `window` is mocked in node.
  * `process` is also mocked by browserify, but has custom properties.
  */
-module.exports.isBrowserEnvironment = !!(!process || process.browser);
+exports.isBrowserEnvironment = !!(!process || process.browser);
 
 /**
  * Check if running in node on the server.
  */
-module.exports.isNodeEnvironment = !module.exports.isBrowserEnvironment;
+exports.isNodeEnvironment = !exports.isBrowserEnvironment;

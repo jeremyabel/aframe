@@ -1,7 +1,7 @@
 var registerComponent = require('../core/component').registerComponent;
 var THREE = require('../lib/three');
 var utils = require('../utils/');
-var bind = utils.bind;
+var bind = require( '../utils/bind' ).bind;
 
 var checkHasPositionalTracking = utils.device.checkHasPositionalTracking;
 

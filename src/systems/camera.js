@@ -1,4 +1,4 @@
-var bind = require('../utils/bind');
+var bind = require('../utils/bind').bind;
 var constants = require('../constants/');
 var registerSystem = require('../core/system').registerSystem;
 
@@ -9,7 +9,7 @@ var DEFAULT_CAMERA_ATTR = 'data-aframe-default-camera';
  *
  * @member {object} activeCameraEl - Active camera entity.
  */
-module.exports.System = registerSystem('camera', {
+exports.System = registerSystem('camera', {
   init: function () {
     this.activeCameraEl = null;
     // Wait for all entities to fully load before checking for existence of camera.
@@ -38,8 +38,6 @@ module.exports.System = registerSystem('camera', {
     defaultCameraEl.setAttribute('position', '0 0 0');
     defaultCameraEl.setAttribute(DEFAULT_CAMERA_ATTR, '');
     defaultCameraEl.setAttribute('camera', {active: true, userHeight: constants.DEFAULT_CAMERA_HEIGHT});
-    defaultCameraEl.setAttribute('wasd-controls', '');
-    defaultCameraEl.setAttribute('look-controls', '');
     defaultCameraEl.setAttribute(constants.AFRAME_INJECTED, '');
     sceneEl.appendChild(defaultCameraEl);
     sceneEl.addEventListener('enter-vr', this.removeDefaultOffset);

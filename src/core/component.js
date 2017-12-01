@@ -394,11 +394,6 @@ Component.prototype = {
   }
 };
 
-// For testing.
-if (window.debug) {
-  var registrationOrderWarnings = module.exports.registrationOrderWarnings = {};
-}
-
 /**
  * Registers a component to A-Frame.
  *
@@ -406,7 +401,7 @@ if (window.debug) {
  * @param {object} definition - Component schema and lifecycle method handlers.
  * @returns {object} Component.
  */
-module.exports.registerComponent = function (name, definition) {
+exports.registerComponent = function (name, definition) {
   var NewComponent;
   var proto = {};
 

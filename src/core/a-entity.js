@@ -1,11 +1,11 @@
-var ANode = require('./a-node');
+var ANode = require('./a-node').node;
 var COMPONENTS = require('./component').components;
 var registerElement = require('./a-register-element').registerElement;
 var THREE = require('../lib/three');
 var utils = require('../utils/');
 
 var AEntity;
-var bind = utils.bind;
+var bind = require('../utils/bind').bind;
 var debug = utils.debug('core:a-entity:debug');
 var warn = utils.debug('core:a-entity:warn');
 

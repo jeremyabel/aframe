@@ -4,10 +4,8 @@ var debug = require('./debug');
 var deepAssign = require('deep-assign');
 var device = require('./device');
 var objectAssign = require('object-assign');
+var bind = require('./bind').bind;
 
-var warn = debug('utils:warn');
-
-module.exports.bind = require('./bind');
 module.exports.coordinates = require('./coordinates');
 module.exports.debug = debug;
 module.exports.device = device;
@@ -15,24 +13,7 @@ module.exports.entity = require('./entity');
 module.exports.forceCanvasResizeSafariMobile = require('./forceCanvasResizeSafariMobile');
 module.exports.material = require('./material');
 module.exports.styleParser = require('./styleParser');
-module.exports.trackedControls = require('./tracked-controls');
 
-module.exports.checkHeadsetConnected = function () {
-  warn('`utils.checkHeadsetConnected` has moved to `utils.device.checkHeadsetConnected`');
-  return device.checkHeadsetConnected(arguments);
-};
-module.exports.isGearVR = function () {
-  warn('`utils.isGearVR` has moved to `utils.device.isGearVR`');
-  return device.isGearVR(arguments);
-};
-module.exports.isIOS = function () {
-  warn('`utils.isIOS` has moved to `utils.device.isIOS`');
-  return device.isIOS(arguments);
-};
-module.exports.isMobile = function () {
-  warn('`utils.isMobile has moved to `utils.device.isMobile`');
-  return device.isMobile(arguments);
-};
 
 /**
  * Returns throttle function that gets called at most once every interval.
@@ -42,10 +23,10 @@ module.exports.isMobile = function () {
  * @param {object} optionalContext - If given, bind function to throttle to this context.
  * @returns {function} Throttled function.
  */
-module.exports.throttle = function (functionToThrottle, minimumInterval, optionalContext) {
+exports.throttle = function (functionToThrottle, minimumInterval, optionalContext) {
   var lastTime;
   if (optionalContext) {
-    functionToThrottle = module.exports.bind(functionToThrottle, optionalContext);
+    functionToThrottle = bind(functionToThrottle, optionalContext);
   }
   return function () {
     var time = Date.now();
@@ -66,10 +47,10 @@ module.exports.throttle = function (functionToThrottle, minimumInterval, optiona
  * @param {object} optionalContext - If given, bind function to throttle to this context.
  * @returns {function} Throttled function.
  */
-module.exports.throttleTick = function (functionToThrottle, minimumInterval, optionalContext) {
+exports.throttleTick = function (functionToThrottle, minimumInterval, optionalContext) {
   var lastTime;
   if (optionalContext) {
-    functionToThrottle = module.exports.bind(functionToThrottle, optionalContext);
+    functionToThrottle = bind(functionToThrottle, optionalContext);
   }
   return function (time, delta) {
     var sinceLastTime = typeof lastTime === 'undefined' ? delta : time - lastTime;
@@ -88,7 +69,7 @@ module.exports.throttleTick = function (functionToThrottle, minimumInterval, opt
  * @param {Object=} [data={bubbles: true, {detail: <el>}}]
  *   Data to pass as `customEventInit` to the event.
  */
-module.exports.fireEvent = function (el, name, data) {
+exports.fireEvent = function (el, name, data) {
   data = data || {};
   data.detail = data.detail || {};
   data.detail.target = data.detail.target || el;
@@ -102,10 +83,10 @@ module.exports.fireEvent = function (el, name, data) {
  * @param  {object} dest - The object to which properties will be copied.
  * @param  {...object} source - The object(s) from which properties will be copied.
  */
-module.exports.extend = objectAssign;
-module.exports.extendDeep = deepAssign;
+exports.extend = objectAssign;
+exports.extendDeep = deepAssign;
 
-module.exports.clone = function (obj) {
+exports.clone = function (obj) {
   return JSON.parse(JSON.stringify(obj));
 };
 
@@ -153,7 +134,7 @@ function deepEqual (a, b) {
   }
   return true;
 }
-module.exports.deepEqual = deepEqual;
+exports.deepEqual = deepEqual;
 
 /**
  * Computes the difference between two objects.
@@ -164,7 +145,7 @@ module.exports.deepEqual = deepEqual;
  *   Difference object where set of keys note which values were not equal, and values are
  *   `b`'s values.
  */
-module.exports.diff = function (a, b) {
+exports.diff = function (a, b) {
   var diff = {};
   var keys = Object.keys(a);
   if (!b) { return diff; }
@@ -191,7 +172,7 @@ module.exports.diff = function (a, b) {
  * @param {Event} event Event object.
  * @returns {Boolean} Whether the key event should be captured.
  */
-module.exports.shouldCaptureKeyEvent = function (event) {
+exports.shouldCaptureKeyEvent = function (event) {
   if (event.metaKey) { return false; }
   return document.activeElement === document.body;
 };
@@ -203,7 +184,7 @@ module.exports.shouldCaptureKeyEvent = function (event) {
  * @param   {string=} [delimiter=' '] Delimiter to use
  * @returns {array}                   Array of delimited strings
  */
-module.exports.splitString = function (str, delimiter) {
+exports.splitString = function (str, delimiter) {
   if (typeof delimiter === 'undefined') { delimiter = ' '; }
   // First collapse the whitespace (or whatever the delimiter is).
   var regex = new RegExp(delimiter, 'g');
@@ -219,7 +200,7 @@ module.exports.splitString = function (str, delimiter) {
  * @param {Object} [defaults={}] Object of default key-value pairs.
  * @returns {Object}
  */
-module.exports.getElData = function (el, defaults) {
+exports.getElData = function (el, defaults) {
   defaults = defaults || {};
   var data = {};
   Object.keys(defaults).forEach(copyAttribute);
@@ -236,7 +217,7 @@ module.exports.getElData = function (el, defaults) {
  * @param  {String} name Name of querystring key.
  * @return {String}      Value
  */
-module.exports.getUrlParameter = function (name) {
+exports.getUrlParameter = function (name) {
   // eslint-disable-next-line no-useless-escape
   name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
   var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
@@ -247,7 +228,7 @@ module.exports.getUrlParameter = function (name) {
 /**
  * Detects whether context is within iframe.
  */
-module.exports.isIframed = function () {
+exports.isIframed = function () {
   return window.top !== window.self;
 };
 
@@ -255,7 +236,7 @@ module.exports.isIframed = function () {
  * Finds all elements under the element that have the isScene
  * property set to true
  */
-module.exports.findAllScenes = function (el) {
+exports.findAllScenes = function (el) {
   var matchingElements = [];
   var allElements = el.getElementsByTagName('*');
   for (var i = 0, n = allElements.length; i < n; i++) {

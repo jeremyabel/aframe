@@ -1,7 +1,7 @@
 var degToRad = require('../lib/three').Math.degToRad;
 var registerComponent = require('../core/component').registerComponent;
 
-module.exports.Component = registerComponent('rotation', {
+exports.Component = registerComponent('rotation', {
   schema: {type: 'vec3'},
 
   /**

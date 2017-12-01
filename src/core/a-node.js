@@ -12,7 +12,7 @@ var warn = utils.debug('core:a-node:warn');
  * Nodes can be modified using mixins.
  * Nodes emit a `loaded` event when they and their children have initialized.
  */
-module.exports = registerElement('a-node', {
+exports.node = registerElement('a-node', {
   prototype: Object.create(window.HTMLElement.prototype, {
     createdCallback: {
       value: function () {

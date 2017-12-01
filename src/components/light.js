@@ -10,7 +10,7 @@ var warn = debug('components:light:warn');
 /**
  * Light component.
  */
-module.exports.Component = registerComponent('light', {
+exports.Component = registerComponent('light', {
   schema: {
     angle: {default: 60, if: {type: ['spot']}},
     color: {type: 'color'},
