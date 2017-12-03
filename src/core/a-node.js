@@ -9,7 +9,6 @@ var warn = utils.debug('core:a-node:warn');
 /**
  * Base class for A-Frame that manages loading of objects.
  *
- * Nodes can be modified using mixins.
  * Nodes emit a `loaded` event when they and their children have initialized.
  */
 exports.node = registerElement('a-node', {
@@ -18,35 +17,18 @@ exports.node = registerElement('a-node', {
       value: function () {
         this.hasLoaded = false;
         this.isNode = true;
-        this.mixinEls = [];
-        this.mixinObservers = {};
       },
       writable: window.debug
     },
 
     attachedCallback: {
       value: function () {
-        var mixins;
         this.sceneEl = this.closestScene();
-
-        if (!this.sceneEl) {
-          warn('You are attempting to attach <' + this.tagName + '> outside of an A-Frame ' +
-               'scene. Append this element to `<a-scene>` instead.');
-        }
 
         this.hasLoaded = false;
         this.emit('nodeready', {}, false);
-
-        mixins = this.getAttribute('mixin');
-        if (mixins) { this.updateMixins(mixins); }
       },
       writable: window.debug
-    },
-
-    attributeChangedCallback: {
-      value: function (attr, oldVal, newVal) {
-        if (attr === 'mixin') { this.updateMixins(newVal, oldVal); }
-      }
     },
 
    /**
@@ -127,87 +109,10 @@ exports.node = registerElement('a-node', {
       }
     },
 
-    /**
-     * Remove old mixins and mixin listeners.
-     * Add new mixins and mixin listeners.
-     */
-    updateMixins: {
-      value: function (newMixins, oldMixins) {
-        var newMixinIds = newMixins ? newMixins.trim().split(/\s+/) : [];
-        var oldMixinIds = oldMixins ? oldMixins.trim().split(/\s+/) : [];
-
-        // Unregister old mixins.
-        oldMixinIds.filter(function (i) {
-          return newMixinIds.indexOf(i) < 0;
-        }).forEach(bind(this.unregisterMixin, this));
-
-        // Register new mixins.
-        this.mixinEls = [];
-        newMixinIds.forEach(bind(this.registerMixin, this));
-      }
-    },
-
-    registerMixin: {
-      value: function (mixinId) {
-        if (!this.sceneEl) { return; }
-        var mixinEl = this.sceneEl.querySelector('a-mixin#' + mixinId);
-        if (!mixinEl) { return; }
-        this.attachMixinListener(mixinEl);
-        this.mixinEls.push(mixinEl);
-      }
-    },
-
     setAttribute: {
       value: function (attr, newValue) {
-        if (attr === 'mixin') { this.updateMixins(newValue); }
         window.HTMLElement.prototype.setAttribute.call(this, attr, newValue);
       }
-    },
-
-    unregisterMixin: {
-      value: function (mixinId) {
-        var mixinEls = this.mixinEls;
-        var mixinEl;
-        var i;
-        for (i = 0; i < mixinEls.length; ++i) {
-          mixinEl = mixinEls[i];
-          if (mixinId === mixinEl.id) {
-            mixinEls.splice(i, 1);
-            break;
-          }
-        }
-        this.removeMixinListener(mixinId);
-      }
-    },
-
-    removeMixinListener: {
-      value: function (mixinId) {
-        var observer = this.mixinObservers[mixinId];
-        if (!observer) { return; }
-        observer.disconnect();
-        this.mixinObservers[mixinId] = null;
-      }
-    },
-
-    attachMixinListener: {
-      value: function (mixinEl) {
-        var self = this;
-        var mixinId = mixinEl.id;
-        var currentObserver = this.mixinObservers[mixinId];
-        if (!mixinEl) { return; }
-        if (currentObserver) { return; }
-        var observer = new MutationObserver(function (mutations) {
-          var attr = mutations[0].attributeName;
-          self.handleMixinUpdate(attr);
-        });
-        var config = { attributes: true };
-        observer.observe(mixinEl, config);
-        this.mixinObservers[mixinId] = observer;
-      }
-    },
-
-    handleMixinUpdate: {
-      value: function () { /* no-op */ }
     },
 
     /**

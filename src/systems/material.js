@@ -1,7 +1,5 @@
 var registerSystem = require('../core/system').registerSystem;
-var THREE = require('../lib/three');
 var utils = require('../utils/');
-var bind = require('../utils/bind').bind;
 
 /**
  * System for material component.

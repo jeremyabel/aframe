@@ -113,66 +113,6 @@ var proto = Object.create(ANode.prototype, {
     }
   },
 
-  /**
-   * Apply mixin to component.
-   */
-  handleMixinUpdate: {
-    value: function (attrName) {
-      if (!attrName) {
-        this.updateComponents();
-        return;
-      }
-      this.updateComponent(attrName, this.getDOMAttribute(attrName));
-    }
-  },
-
-  mapStateMixins: {
-    value: function (state, op) {
-      var mixins = this.getAttribute('mixin');
-      var mixinIds;
-      if (!mixins) { return; }
-      mixinIds = mixins.split(' ');
-      mixinIds.forEach(function (id) {
-        var mixinId = id + '-' + state;
-        op(mixinId);
-      });
-      this.updateComponents();
-    }
-  },
-
-  /**
-   * Handle update of mixin states (e.g., `box-hovered` where `box` is the mixin ID and
-   * `hovered` is the entity state.
-   */
-  updateStateMixins: {
-    value: function (newMixins, oldMixins) {
-      var diff;
-      var newMixinsIds = newMixins.split(' ');
-      var oldMixinsIds = (oldMixins || '') ? oldMixins.split(' ') : [];
-      var self = this;
-
-      // List of mixins that might have been removed on update.
-      diff = oldMixinsIds.filter(function (i) { return newMixinsIds.indexOf(i) < 0; });
-
-      // Remove removed mixins.
-      diff.forEach(function (mixinId) {
-        // State Mixins
-        var stateMixinsEls = document.querySelectorAll('[id^=' + mixinId + '-]');
-        Array.prototype.forEach.call(stateMixinsEls, function (el) {
-          self.unregisterMixin(el.id);
-        });
-      });
-
-      // Add new mixins.
-      this.states.forEach(function (state) {
-        newMixinsIds.forEach(function (id) {
-          var mixinId = id + '-' + state;
-          self.registerMixin(mixinId);
-        });
-      });
-    }
-  },
-
   getObject3D: {
     value: function (type) {
       return this.object3DMap[type];
@@ -426,12 +366,10 @@ var proto = Object.create(ANode.prototype, {
     value: function (name) {
       var component;
       var isDefault;
-      var isMixedIn;
 
       // Don't remove default or mixed-in components.
       isDefault = name in this.defaultComponents;
-      isMixedIn = isComponentMixedIn(name, this.mixinEls);
-      if (isDefault || isMixedIn) { return; }
+      if (isDefault) { return; }
 
       component = this.components[name];
       if (!component) { return; }
@@ -473,9 +411,6 @@ var proto = Object.create(ANode.prototype, {
       var self = this;
 
       if (!this.hasLoaded) { return; }
-
-      // Gather mixin-defined components.
-      getMixedInComponents(this).forEach(addComponent);
 
       // Gather from extra initial component data if defined (e.g., primitives).
       if (this.getExtraComponents) {
@@ -570,11 +505,6 @@ var proto = Object.create(ANode.prototype, {
         return;
       }
 
-      // Remove mixins.
-      if (attr === 'mixin') {
-        this.mixinUpdate('');
-      }
-
       window.HTMLElement.prototype.removeAttribute.call(this, attr);
     }
   },
@@ -647,19 +577,6 @@ var proto = Object.create(ANode.prototype, {
         this.updateComponent(attr, newVal);
         return;
       }
-      if (attr === 'mixin') {
-        this.mixinUpdate(newVal, oldVal);
-        return;
-      }
-    }
-  },
-
-  mixinUpdate: {
-    value: function (newMixins, oldMixins) {
-      oldMixins = oldMixins || this.getAttribute('mixin');
-      this.updateMixins(newMixins, oldMixins);
-      this.updateStateMixins(newMixins, oldMixins);
-      this.updateComponents();
     }
   },
 
@@ -729,7 +646,6 @@ var proto = Object.create(ANode.prototype, {
        */
       function normalSetAttribute (el, attrName, value) {
         ANode.prototype.setAttribute.call(el, attrName, value);
-        if (attrName === 'mixin') { el.mixinUpdate(value); }
       }
     },
     writable: window.debug
@@ -820,7 +736,6 @@ var proto = Object.create(ANode.prototype, {
     value: function (state) {
       if (this.is(state)) { return; }
       this.states.push(state);
-      this.mapStateMixins(state, bind(this.registerMixin, this));
       this.emit('stateadded', {state: state});
     }
   },
@@ -830,7 +745,6 @@ var proto = Object.create(ANode.prototype, {
       var stateIndex = this.states.indexOf(state);
       if (stateIndex === -1) { return; }
       this.states.splice(stateIndex, 1);
-      this.mapStateMixins(state, bind(this.unregisterMixin, this));
       this.emit('stateremoved', {state: state});
     }
   },
@@ -860,35 +774,6 @@ function checkComponentDefined (el, name) {
 
   // Check if element contains the component.
   if (el.components[name] && el.components[name].attrValue) { return true; }
-
-  return isComponentMixedIn(name, el.mixinEls);
-}
-
-function getMixedInComponents (entityEl) {
-  var components = [];
-  entityEl.mixinEls.forEach(function getMixedComponents (mixinEl) {
-    Object.keys(mixinEl.componentCache).forEach(addComponent);
-    function addComponent (key) {
-      components.push(key);
-    }
-  });
-  return components;
-}
-
-/**
- * Check if any mixins contains a component.
- *
- * @param {string} name - Component name.
- * @param {array} mixinEls - Array of <a-mixin>s.
- */
-function isComponentMixedIn (name, mixinEls) {
-  var i;
-  var inMixin = false;
-  for (i = 0; i < mixinEls.length; ++i) {
-    inMixin = mixinEls[i].hasAttribute(name);
-    if (inMixin) { break; }
-  }
-  return inMixin;
 }
 
 /**

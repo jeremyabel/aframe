@@ -347,7 +347,6 @@ Component.prototype = {
     var data;
     var schema = this.schema;
     var isSinglePropSchema = isSingleProp(schema);
-    var mixinEls = this.el.mixinEls;
     var previousData;
 
     // 1. Default values (lowest precendence).

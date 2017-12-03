@@ -12,7 +12,6 @@ var propertyToThreeMapping = {
   color: 'v3',
   int: 'i',
   number: 'f',
-  map: 't',
   time: 'f',
   vec2: 'v2',
   vec3: 'v3',
@@ -131,9 +130,6 @@ Shader.prototype = {
       case 'color': {
         color = new THREE.Color(value);
         return new THREE.Vector3(color.r, color.g, color.b);
-      }
-      case 'map': {
-        return THREE.ImageUtils.loadTexture(value);
       }
       default: {
         return value;

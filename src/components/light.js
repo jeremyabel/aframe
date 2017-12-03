@@ -1,4 +1,3 @@
-var bind = require('../utils/bind');
 var diff = require('../utils').diff;
 var registerComponent = require('../core/component').registerComponent;
 var THREE = require('../lib/three');

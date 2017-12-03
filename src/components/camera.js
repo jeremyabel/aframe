@@ -1,7 +1,5 @@
 var registerComponent = require('../core/component').registerComponent;
 var THREE = require('../lib/three');
-var utils = require('../utils/');
-var bind = require( '../utils/bind' ).bind;
 
 /**
  * Camera component.
