@@ -23,13 +23,10 @@ module.exports.Component = registerComponent('material', {
     alphaTest: {default: 0.0, min: 0.0, max: 1.0},
     flatShading: {default: false},
     opacity: {default: 1.0, min: 0.0, max: 1.0},
-    shader: {default: 'standard', oneOf: shaderNames},
+    shader: {default: 'flat', oneOf: shaderNames},
     side: {default: 'front', oneOf: ['front', 'back', 'double']},
     transparent: {default: false},
     visible: {default: true},
-    offset: {type: 'vec2', default: {x: 0, y: 0}},
-    repeat: {type: 'vec2', default: {x: 1, y: 1}},
-    npot: {default: false}
   },
 
   init: function () {

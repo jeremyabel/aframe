@@ -3,7 +3,7 @@ var registerComponent = require('../core/component').registerComponent;
 // Avoids triggering a zero-determinant which makes object3D matrix non-invertible.
 var zeroScale = 0.00001;
 
-module.exports.Component = registerComponent('scale', {
+exports.Component = registerComponent('scale', {
   schema: {
     type: 'vec3',
     default: {x: 1, y: 1, z: 1}

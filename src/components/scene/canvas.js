@@ -1,4 +1,4 @@
-var bind = require('../../utils/bind');
+var bind = require('../../utils/bind').bind;
 var registerComponent = require('../../core/component').registerComponent;
 
 module.exports.Component = registerComponent('canvas', {
@@ -12,10 +12,6 @@ module.exports.Component = registerComponent('canvas', {
     canvasEl.dataset.aframeCanvas = true;
     sceneEl.appendChild(canvasEl);
 
-    document.addEventListener('fullscreenchange', onFullScreenChange);
-    document.addEventListener('mozfullscreenchange', onFullScreenChange);
-    document.addEventListener('webkitfullscreenchange', onFullScreenChange);
-
     // Prevent overscroll on mobile.
     canvasEl.addEventListener('touchmove', function (event) {
       event.preventDefault();
@@ -28,16 +24,5 @@ module.exports.Component = registerComponent('canvas', {
     // For unknown reasons a syncrhonous resize does not work on desktop when
     // entering/exiting fullscreen.
     setTimeout(bind(sceneEl.resize, sceneEl), 0);
-
-    function onFullScreenChange () {
-      var fullscreenEl =
-        document.fullscreenElement ||
-        document.mozFullScreenElement ||
-        document.webkitFullscreenElement;
-      // No fullscren element === exit fullscreen
-      if (!fullscreenEl) { sceneEl.exitVR(); }
-      document.activeElement.blur();
-      document.body.focus();
-    }
   }
 });

@@ -1,9 +1,7 @@
 var registerComponent = require('../core/component').registerComponent;
 var THREE = require('../lib/three');
 var utils = require('../utils/');
-var bind = utils.bind;
-
-var checkHasPositionalTracking = utils.device.checkHasPositionalTracking;
+var bind = require( '../utils/bind' ).bind;
 
 /**
  * Camera component.
@@ -28,17 +26,9 @@ module.exports.Component = registerComponent('camera', {
     var el = this.el;
     var sceneEl = el.sceneEl;
 
-    this.savedPose = null;
-
     // Create camera.
     camera = this.camera = new THREE.PerspectiveCamera();
     el.setObject3D('camera', camera);
-
-    // Add listeners to save and restore camera pose if headset is present.
-    this.onEnterVR = bind(this.onEnterVR, this);
-    this.onExitVR = bind(this.onExitVR, this);
-    sceneEl.addEventListener('enter-vr', this.onEnterVR);
-    sceneEl.addEventListener('exit-vr', this.onExitVR);
   },
 
   /**
@@ -80,23 +70,6 @@ module.exports.Component = registerComponent('camera', {
   remove: function () {
     var sceneEl = this.el.sceneEl;
     this.el.removeObject3D('camera');
-    sceneEl.removeEventListener('enter-vr', this.onEnterVR);
-    sceneEl.removeEventListener('exit-vr', this.onExitVR);
-  },
-
-  /**
-   * Save pose and remove the offset.
-   */
-  onEnterVR: function () {
-    this.saveCameraPose();
-    this.removeHeightOffset();
-  },
-
-  /**
-   * Restore the pose. Do not need to re-add the offset because it was saved on entering VR.
-   */
-  onExitVR: function () {
-    this.restoreCameraPose();
   },
 
   /**
@@ -116,61 +89,5 @@ module.exports.Component = registerComponent('camera', {
       y: currentPosition.y - oldOffset + userHeightOffset,
       z: currentPosition.z
     });
-  },
-
-  /**
-   * Remove the height offset (called when entering VR) since WebVR API gives absolute
-   * position.
-   */
-  removeHeightOffset: function () {
-    var currentPosition;
-    var el = this.el;
-    var hasPositionalTracking;
-    var userHeightOffset = this.data.userHeight;
-
-    // Remove the offset if there is positional tracking when entering VR.
-    // Necessary for fullscreen mode with no headset.
-    // Checking this.hasPositionalTracking to make the value injectable for unit tests.
-    hasPositionalTracking = this.hasPositionalTracking !== undefined ? this.hasPositionalTracking : checkHasPositionalTracking();
-
-    if (!userHeightOffset || !hasPositionalTracking) { return; }
-
-    currentPosition = el.getAttribute('position') || {x: 0, y: 0, z: 0};
-    el.setAttribute('position', {
-      x: currentPosition.x,
-      y: currentPosition.y - userHeightOffset,
-      z: currentPosition.z
-    });
-  },
-
-  /**
-   * Save camera pose before entering VR to restore later if exiting.
-   */
-  saveCameraPose: function () {
-    var el = this.el;
-    var hasPositionalTracking = this.hasPositionalTracking !== undefined ? this.hasPositionalTracking : checkHasPositionalTracking();
-
-    if (this.savedPose || !hasPositionalTracking) { return; }
-
-    this.savedPose = {
-      position: el.getAttribute('position'),
-      rotation: el.getAttribute('rotation')
-    };
-  },
-
-  /**
-   * Reset camera pose to before entering VR.
-   */
-  restoreCameraPose: function () {
-    var el = this.el;
-    var savedPose = this.savedPose;
-    var hasPositionalTracking = this.hasPositionalTracking !== undefined ? this.hasPositionalTracking : checkHasPositionalTracking();
-
-    if (!savedPose || !hasPositionalTracking) { return; }
-
-    // Reset camera orientation.
-    el.setAttribute('position', savedPose.position);
-    el.setAttribute('rotation', savedPose.rotation);
-    this.savedPose = null;
   }
 });

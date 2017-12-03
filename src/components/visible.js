@@ -3,7 +3,7 @@ var registerComponent = require('../core/component').registerComponent;
 /**
  * Visibility component.
  */
-module.exports.Component = registerComponent('visible', {
+exports.Component = registerComponent('visible', {
   schema: {default: true},
 
   update: function () {

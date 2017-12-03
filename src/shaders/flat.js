@@ -1,6 +1,5 @@
 var registerShader = require('../core/shader').registerShader;
 var THREE = require('../lib/three');
-var utils = require('../utils/');
 
 /**
  * Flat shader using THREE.MeshBasicMaterial.
@@ -9,11 +8,6 @@ module.exports.Shader = registerShader('flat', {
   schema: {
     color: {type: 'color'},
     fog: {default: true},
-    height: {default: 256},
-    offset: {type: 'vec2', default: {x: 0, y: 0}},
-    repeat: {type: 'vec2', default: {x: 1, y: 1}},
-    src: {type: 'map'},
-    width: {default: 512},
     wireframe: {default: false},
     wireframeLinewidth: {default: 2}
   },
@@ -23,14 +17,11 @@ module.exports.Shader = registerShader('flat', {
    * Adds a reference from the scene to this entity as the camera.
    */
   init: function (data) {
-    this.textureSrc = null;
     this.material = new THREE.MeshBasicMaterial(getMaterialData(data));
-    utils.material.updateMap(this, data);
   },
 
   update: function (data) {
     this.updateMaterial(data);
-    utils.material.updateMap(this, data);
   },
 
   /**

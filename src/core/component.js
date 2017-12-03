@@ -368,14 +368,6 @@ Component.prototype = {
       });
     }
 
-    // 2. Mixin values.
-    mixinEls.forEach(function handleMixinUpdate (mixinEl) {
-      var mixinData = mixinEl.getAttribute(self.attrName);
-      if (mixinData) {
-        data = extendProperties(data, mixinData, isSinglePropSchema);
-      }
-    });
-
     // 3. Attribute values (highest precendence).
     if (componentDefined) {
       if (isSinglePropSchema) {
@@ -394,11 +386,6 @@ Component.prototype = {
   }
 };
 
-// For testing.
-if (window.debug) {
-  var registrationOrderWarnings = module.exports.registrationOrderWarnings = {};
-}
-
 /**
  * Registers a component to A-Frame.
  *
@@ -406,7 +393,7 @@ if (window.debug) {
  * @param {object} definition - Component schema and lifecycle method handlers.
  * @returns {object} Component.
  */
-module.exports.registerComponent = function (name, definition) {
+exports.registerComponent = function (name, definition) {
   var NewComponent;
   var proto = {};
 

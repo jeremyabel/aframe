@@ -3,7 +3,7 @@
  * containing `component` name and `property` name. If there is no delimiter, just return the
  * string back.
  */
-module.exports.getComponentPropertyPath = function (str, delimiter) {
+exports.getComponentPropertyPath = function (str, delimiter) {
   delimiter = delimiter || '.';
   if (str.indexOf(delimiter) === -1) { return str; }
   return str.split(delimiter);
@@ -13,7 +13,7 @@ module.exports.getComponentPropertyPath = function (str, delimiter) {
  * Get component property using encoded component name + component property name with a
  * delimiter.
  */
-module.exports.getComponentProperty = function (el, name, delimiter) {
+exports.getComponentProperty = function (el, name, delimiter) {
   var splitName;
   delimiter = delimiter || '.';
   if (name.indexOf(delimiter) !== -1) {
@@ -27,7 +27,7 @@ module.exports.getComponentProperty = function (el, name, delimiter) {
  * Set component property using encoded component name + component property name with a
  * delimiter.
  */
-module.exports.setComponentProperty = function (el, name, value, delimiter) {
+exports.setComponentProperty = function (el, name, value, delimiter) {
   var data = {};
   var splitName;
   delimiter = delimiter || '.';

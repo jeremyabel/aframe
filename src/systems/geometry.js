@@ -10,7 +10,7 @@ var THREE = require('../lib/three');
  * @member {object} cacheCount - Keep track of number of entities using a geometry to
  *         know whether to dispose on removal.
  */
-module.exports.System = registerSystem('geometry', {
+exports.System = registerSystem('geometry', {
   init: function () {
     this.cache = {};
     this.cacheCount = {};
