@@ -34,12 +34,7 @@ require('./systems/index'); // Register standard systems.
 var ANode = require('./core/a-node');
 var AEntity = require('./core/a-entity'); // Depends on ANode and core components.
 
-// Extras.
 require('./extras/primitives/');
-
-// console.log('A-Frame Version: 0.6.1 (Date 19-07-2017, Commit #83eb39b)');
-// console.log('three Version:', pkg.dependencies['three']);
-// console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
 module.exports = window.AFRAME = {
   AComponent: require('./core/component').Component,
