@@ -14,6 +14,13 @@ var isIOS = utils.device.isIOS();
 var isMobile = utils.device.isMobile();
 var registerElement = re.registerElement;
 
+// var EffectComposer = require( 'postprocessing' ).EffectComposer;
+// var RenderPass = require( 'postprocessing' ).RenderPass;
+// var BloomPass = require( 'postprocessing' ).BloomPass;
+
+// import { EffectComposer, GlitchPass, RenderPass } from "postprocessing";
+
+
 /**
  * Scene element, holds all entities.
  *
@@ -63,6 +70,8 @@ exports.AScene = registerElement('a-scene', {
           this.setupRenderer();
           this.resize();
         });
+
+
       },
       writable: true
     },
@@ -221,6 +230,7 @@ exports.AScene = registerElement('a-scene', {
         camera.updateProjectionMatrix();
         // Notify renderer of size change.
         this.renderer.setSize(size.width, size.height);
+        // this.fxComposer.setSize(size.width, size.height);
       },
       writable: window.debug
     },
@@ -234,6 +244,13 @@ exports.AScene = registerElement('a-scene', {
         });
         renderer.setPixelRatio(window.devicePixelRatio);
         renderer.sortObjects = false;
+
+        // this.fxComposer = new EffectComposer( this.renderer );//new THREE.EffectComposer( this.renderer );
+        
+        // this.bloomPass = new BloomPass({
+        //   resolutionScale: 0.25
+        // });
+        
       },
       writable: window.debug
     },
@@ -264,6 +281,15 @@ exports.AScene = registerElement('a-scene', {
             if (sceneEl.renderStarted) { return; }
 
             sceneEl.resize();
+
+            // sceneEl.addEventListener( 'add-post-pass', function( event ) {
+            //   self.renderPass = new RenderPass( self.object3D, sceneEl.camera );
+            //   self.fxComposer.addPass( self.renderPass );
+
+            //   var pass = event.detail;
+            //   pass.renderToScreen = true;
+            //   self.fxComposer.addPass( pass );
+            // });
 
             // Kick off render loop.
             if (sceneEl.renderer) {
@@ -374,6 +400,8 @@ exports.AScene = registerElement('a-scene', {
         if (this.isPlaying) { this.tick(this.time, delta); }
 
         this.animationFrameID = window.requestAnimationFrame(this.render);
+
+        // this.fxComposer.render( delta );
         this.renderer.render( this.object3D, this.camera );
 
         if (this.isPlaying) { this.tock(this.time, delta); }

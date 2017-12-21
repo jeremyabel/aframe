@@ -18,4 +18,11 @@ if (THREE.Cache) {
   THREE.Cache.enabled = true;
 }
 
+require( 'three/examples/js/postprocessing/EffectComposer' );
+require( 'three/examples/js/postprocessing/ShaderPass' );
+require( 'three/examples/js/postprocessing/RenderPass' );
+require( 'three/examples/js/postprocessing/BloomPass' );
+require( 'three/examples/js/shaders/ConvolutionShader' );
+require( 'three/examples/js/shaders/CopyShader' );
+
 module.exports = THREE;
